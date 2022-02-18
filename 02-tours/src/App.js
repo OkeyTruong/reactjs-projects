@@ -15,12 +15,16 @@ function App() {
       // fetch
       // const res = await fetch(url);
       // const tours = await res.json();
-      
+
       // axios
       const res = await axios.get(url);
-      const data = res.data; 
-      setTours(data)
-    } catch (error) {}
+      const data = res.data;
+      setTours(data);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -33,9 +37,29 @@ function App() {
       </main>
     );
   }
+  const removeTour = (id) => {
+    const newTours = tours.filter((tour) => tour.id !== id);
+    setTours(newTours);
+  };
+  if (tours.length === 0) {
+    return (
+      <main>
+        <div className="title">
+          <h2>no tours left</h2>
+          <button className="btn" onClick={() => fetchTours()}>
+            refresh
+          </button>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main>
-      <Tours/>
+      <Tours tours={tours} removeTour={removeTour} />
+      <button className="btn" onClick={() => setTours([])}>
+        Clear all
+      </button>
     </main>
   );
 }
